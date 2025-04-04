@@ -1,0 +1,15 @@
+/*Write a Sass file that assigns: bg and color*/
+
+$text-color: #3D3D3D;
+$background-color: #6d6d6d;
+
+body {
+  background-color: $background-color;
+  color: $text-color;
+}
+p {
+  color: $text-color;
+}
+h2 {
+  background-color: $background-color;
+}
