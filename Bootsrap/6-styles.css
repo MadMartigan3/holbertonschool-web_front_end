@@ -1,0 +1,57 @@
+/* Rouge principal */
+:root {
+  --color-red: #E0003C;
+  --color-red-hover: #BC1340;
+  --gray-muted: #8C8C8C;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--color-red) !important;
+}
+
+.btn-primary {
+  background-color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--color-red-hover);
+  border-color: var(--color-red-hover);
+}
+
+.btn-outline-primary {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--color-red);
+  color: white;
+  border-color: var(--color-red);
+}
+
+a,
+a:hover,
+a:focus {
+  color: var(--color-red);
+}
+
+.card,
+.card-header,
+.card-footer {
+  border-color: var(--color-red);
+  border-radius: 1rem;
+  overflow: hidden
+}
+
+.card-header {
+  background-color: var(--color-red);
+  color: white;
+}
+
+.text-muted {
+  color: var(--gray-muted) !important;
+}
