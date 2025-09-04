@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Task 7</title>
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+                integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+                crossorigin="anonymous"></script>
+        
+        <script type="application/javascript">
+            function createSearchForm() {
+                const formHTML = `
+                    <form>
+                        <input type="text">
+                        <input type="submit" value="Submit">
+                        <ul></ul>
+                    </form>
+                `;
+                $(document.body).prepend(formHTML);
+                
+                $('input:last').click(function(e) {
+                    e.preventDefault();
+                    queryWikipedia($('input:first').val());
+                    $('input[type="text"]').val('');
+                });
+            }
+
+            function addNewArticle(id, title, snippet) {
+                const newarticle = `
+                    <li>
+                        <p>
+                            <span>${id} - </span>
+                            <b>${title}</b>
+                        </p>
+                        <p>${snippet}</p>
+                    </li>
+                `;
+                $('ul').append(newarticle);
+            }
+
+            function queryWikipedia(search) {
+                const params = new URLSearchParams({
+                    action: "query",
+                    list: "search",
+                    srsearch: search,
+                    format: "json",
+                    origin: "*"
+                });
+
+                fetch(`https://en.wikipedia.org/w/api.php?${params}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.query && data.query.search) {
+                            data.query.search.forEach(({ pageid, title, snippet }) => {
+                                addNewArticle(pageid, title, snippet);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Erreur:", error);
+                    });
+            }
+
+            $(document).ready(function() {
+                createSearchForm();
+            });
+        </script>
+    </head>
+
+    <body>
+
+    </body>
+
+</html>

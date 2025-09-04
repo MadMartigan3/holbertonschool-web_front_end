@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Task 8</title>
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+                integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+                crossorigin="anonymous"></script>
+        
+        <script type="application/javascript">
+            function createSearchForm() {
+                const formHTML = `
+                    <form>
+                        <input type="text">
+                        <input type="submit" value="Submit">
+                        <ul></ul>
+                        <ul id="pagination"></ul>
+                    </form>
+                `;
+                $(document.body).prepend(formHTML);
+                
+                $('input:last').click(function(e) {
+                    e.preventDefault();
+                    queryWikipedia($('input:first').val());
+                    $('input[type="text"]').val('');
+                });
+            }
+
+            function addNewArticle(id, title, snippet) {
+                const newarticle = `
+                    <li>
+                        <p>
+                            <span>${id} - </span>
+                            <b>${title}</b>
+                        </p>
+                        <p>${snippet}</p>
+                    </li>
+                `;
+                $('ul:first').append(newarticle);
+            }
+
+            function queryWikipedia(search, offset = 0) {
+                window.currentSearch = search;
+                
+                const params = new URLSearchParams({
+                    action: "query",
+                    list: "search",
+                    srsearch: search,
+                    format: "json",
+                    origin: "*",
+                    sroffset: offset
+                });
+
+                fetch(`https://en.wikipedia.org/w/api.php?${params}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        $('ul:first').empty();
+                        
+                        if (data.query && data.query.search) {
+                            data.query.search.forEach(({ pageid, title, snippet }) => {
+                                addNewArticle(pageid, title, snippet);
+                            });
+                            
+                            buildPagination(data.query.searchinfo.totalhits, 10, offset);
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Erreur:", error);
+                    });
+            }
+
+            function buildPagination(numberOfItems, itemsPerPage, currentOffset) {
+                $('#pagination').empty();
+                
+                const totalPages = Math.ceil(numberOfItems / itemsPerPage);
+                const currentPage = Math.floor(currentOffset / itemsPerPage) + 1;
+                
+                for (let page = 1; page <= totalPages; page++) {
+                    const pageOffset = (page - 1) * itemsPerPage;
+                    const listItem = $('<li>').text(page);
+                    
+                    listItem.css({
+                        'cursor': 'pointer',
+                        'margin-left': '10px',
+                        'display': 'inline-block'
+                    });
+                    
+                    if (page === currentPage) {
+                        listItem.css('font-weight', 'bold');
+                    }
+                    
+                    listItem.click(function() {
+                        const searchValue = window.currentSearch;
+                        queryWikipedia(searchValue, pageOffset);
+                    });
+                    
+                    $('#pagination').append(listItem);
+                }
+            }
+
+            $(document).ready(function() {
+                createSearchForm();
+            });
+        </script>
+    </head>
+
+    <body>
+
+    </body>
+
+</html>
